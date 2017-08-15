@@ -8,7 +8,10 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,7 +28,7 @@ public class Tab2Fragment extends Fragment {
     private Button button_from;
     private Button button_to;
     private Button button_search;
-    private TextView smallest_path;
+    private ListView smallest_path;
     String string_from = "";
     String string_to = "";
 
@@ -71,7 +74,7 @@ public class Tab2Fragment extends Fragment {
         });
 
         button_search = (Button) view.findViewById(R.id.to_search);
-        smallest_path = (TextView) view.findViewById(R.id.textPath);
+        smallest_path = (ListView) view.findViewById(R.id.shortest_path);
         button_search.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
@@ -79,13 +82,9 @@ public class Tab2Fragment extends Fragment {
                 //Toast.makeText(getActivity(), "TESTING BUTTON SEARCH",Toast.LENGTH_SHORT).show();
                 final ArrayList<String> ans;
                 ans = new ArrayList<String>(SolutionPath.run(InitStations.fromStrToInt(string_from),InitStations.fromStrToInt(string_to)));
-
-                String path = "Кратчайший путь: ";
-                for (int i = 0; i < ans.size(); i++) {
-                    path = path + ans.get(i) + " " + "->" + " ";
-                }
-
-                smallest_path.setText(path);
+                String[] path = ans.toArray(new String[ans.size()]);
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, path);
+                smallest_path.setAdapter(adapter);
 
             }
         });

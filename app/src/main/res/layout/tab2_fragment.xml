@@ -26,13 +26,12 @@
         android:layout_below="@+id/point_to"
         android:text="FIND PATH" />
 
-    <TextView
-        android:id="@+id/textPath"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <ListView
+        android:id="@+id/shortest_path"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/to_search"
-        android:layout_marginTop="26dp"
-        android:layout_alignParentLeft="true" />
+        android:layout_below="@+id/to_search" />
 
 </RelativeLayout>

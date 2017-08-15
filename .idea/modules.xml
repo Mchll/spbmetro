@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/metro_Tabbed.iml" filepath="$PROJECT_DIR$/metro_Tabbed.iml" />
+      <module fileurl="file://$PROJECT_DIR$/spbmetro.iml" filepath="$PROJECT_DIR$/spbmetro.iml" />
     </modules>
   </component>
 </project>
