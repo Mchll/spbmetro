@@ -27,13 +27,27 @@
         android:layout_below="@+id/point_to"
         android:text="FIND PATH" />
 
-    <ListView
+    <!--<ListView
         android:id="@+id/shortest_path"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/to_search"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true" />-->
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/scroll"
+        android:layout_below="@+id/to_search">
+
+        <LinearLayout
+            android:id="@+id/linLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"></LinearLayout>
+
+    </ScrollView>
 
     <Button
         android:id="@+id/fab"

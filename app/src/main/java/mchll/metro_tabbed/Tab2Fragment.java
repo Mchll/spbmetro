@@ -1,5 +1,6 @@
 package mchll.metro_tabbed;
 
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,10 +13,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.view.ViewGroup.LayoutParams;
 
 import java.util.ArrayList;
 
@@ -31,17 +34,25 @@ public class Tab2Fragment extends Fragment {
     private Button button_to;
     private Button button_search;
     private Button fab;
+    private LinearLayout linLayout;
     private ListView smallest_path;
     String string_from = "";
     String string_to = "";
     Boolean enable_from = false;
     Boolean enable_to = false;
+    int[] colors = new int[6];
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.tab2_fragment,container,false);
 
+        colors[0] = Color.parseColor("#FFFAFAFA");
+        colors[1] = Color.parseColor("#FFDB0232");
+        colors[2] = Color.parseColor("#FF0277BB");
+        colors[3] = Color.parseColor("#FF049652");
+        colors[4] = Color.parseColor("#FFE37502");
+        colors[5] = Color.parseColor("#FF77237F");
 
         button_from = (Button) view.findViewById(R.id.point_from);
         button_from.setOnClickListener(new View.OnClickListener() {
@@ -81,8 +92,9 @@ public class Tab2Fragment extends Fragment {
         });
 
         button_search = (Button) view.findViewById(R.id.to_search);
-        smallest_path = (ListView) view.findViewById(R.id.shortest_path);
+        //smallest_path = (ListView) view.findViewById(R.id.shortest_path);
         fab = (Button) view.findViewById(R.id.fab);
+        linLayout = (LinearLayout) view.findViewById(R.id.linLayout);
 
         button_search.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -98,14 +110,34 @@ public class Tab2Fragment extends Fragment {
                         ans.set(ans.size() - 1, shortest_time);
                         ans.add("");
                         ans.add("");
+                        ans.add("");
                     }
-
-                    String[] path = ans.toArray(new String[ans.size()]);
-                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, path);
-                    smallest_path.setAdapter(adapter);
 
                     fab.setVisibility(View.VISIBLE);
                     fab.setText(" " + shortest_time + " ");
+                    String[] path = ans.toArray(new String[ans.size()]);
+
+                    /*ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, path);
+                    smallest_path.setAdapter(adapter);*/
+
+                    LayoutInflater ltInflater = getActivity().getLayoutInflater();
+                    int branch = 0;
+                    linLayout.removeAllViews();
+
+                    for (int i = 0; i < path.length; i++) {
+                        View item = ltInflater.inflate(R.layout.my_list_item, linLayout, false);
+                        branch = InitStations.getBranch(path[i]);
+
+                        TextView text_item = (TextView) item.findViewById(R.id.item_text);
+                        text_item.setText(path[i]);
+
+                        Button button_item = (Button) item.findViewById(R.id.item_button);
+                        button_item.setBackgroundColor(colors[branch]);
+
+                        item.getLayoutParams().width = LayoutParams.MATCH_PARENT;
+                        linLayout.addView(item);
+                    }
+
                 }
             }
         });
