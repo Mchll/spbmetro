@@ -441,6 +441,80 @@ class InitStations {
         else return "Whoops";
     }
 
+    static ArrayList<String> initDataString() {
+
+        ArrayList<String> items = new ArrayList<>();
+        items.add("Автово");
+        items.add("Адмиралтейская");
+        items.add("Академическая");
+        items.add("Балтийская");
+        items.add("Бухарестская");
+        items.add("Василеостровская");
+        items.add("Владимирская");
+        items.add("Волковская");
+        items.add("Выборгская");
+        items.add("Горьковская");
+        items.add("Гостиный двор");
+        items.add("Гражданский проспект");
+        items.add("Девяткино");
+        items.add("Достоевская");
+        items.add("Елизаровская");
+        items.add("Звёздная");
+        items.add("Звенигородская");
+        items.add("Кировский завод");
+        items.add("Комендантский проспект");
+        items.add("Крестовский остров");
+        items.add("Купчино");
+        items.add("Ладожская");
+        items.add("Ленинский проспект");
+        items.add("Лесная");
+        items.add("Лиговский проспект");
+        items.add("Ломоносовская");
+        items.add("Маяковская");
+        items.add("Международная");
+        items.add("Московская");
+        items.add("Московские ворота");
+        items.add("Нарвская");
+        items.add("Невский проспект");
+        items.add("Новочеркасская");
+        items.add("Обводный канал");
+        items.add("Обухово");
+        items.add("Озерки");
+        items.add("Парк Победы");
+        items.add("Парнас");
+        items.add("Петроградская");
+        items.add("Пионерская");
+        items.add("Площадь Александра Невского 1");
+        items.add("Площадь Александра Невского 2");
+        items.add("Площадь Восстания");
+        items.add("Площадь Ленина");
+        items.add("Площадь Мужества");
+        items.add("Политехническая");
+        items.add("Приморская");
+        items.add("Пролетарская");
+        items.add("Проспект Большевиков");
+        items.add("Проспект Ветеранов");
+        items.add("Проспект Просвещения");
+        items.add("Пушкинская");
+        items.add("Рыбацкое");
+        items.add("Садовая");
+        items.add("Сенная площадь");
+        items.add("Спасская");
+        items.add("Спортивная");
+        items.add("Старая Деревня");
+        items.add("Технологический институт 1");
+        items.add("Технологический институт 2");
+        items.add("Удельная");
+        items.add("Улица Дыбенко");
+        items.add("Фрунзенская");
+        items.add("Чёрная речка");
+        items.add("Чернышевская");
+        items.add("Чкаловская");
+        items.add("Электросила");
+
+        return items;
+    }
+
     static ArrayList<SearchModel> initData() {
 
         ArrayList<SearchModel> items = new ArrayList<>();
@@ -513,6 +587,40 @@ class InitStations {
         items.add(new SearchModel("Электросила"));
 
         return items;
+    }
+    
+    static ArrayList<SearchModel> initLines() {
+
+        ArrayList<SearchModel> items = new ArrayList<>();
+        items.add(new SearchModel("1 - Кировско-Выборгская линия"));
+        items.add(new SearchModel("2 - Московско-Петроградская линия"));
+        items.add(new SearchModel("3 - Невско-Василеостровская линия"));
+        items.add(new SearchModel("4 - Правобережная линия"));
+        items.add(new SearchModel("5 - Фрунзенско-Приморская линия"));
+
+        return items;
+    }
+    
+    static int getIntBranch(String s) {
+        if(s.equals("1 - Кировско-Выборгская линия")) return 1;
+        else if(s.equals("2 - Московско-Петроградская линия")) return 2;
+        else if(s.equals("3 - Невско-Василеостровская линия")) return 3;
+        else if(s.equals("4 - Правобережная линия")) return 4;
+        else if(s.equals("5 - Фрунзенско-Приморская линия")) return 5;
+        else return 0;
+    }
+
+    static ArrayList<String> getBranchStations(int branch) {
+        ArrayList<String> items = new ArrayList<>(initDataString());
+        ArrayList<String> ans = new ArrayList<>();
+
+        for (int i = 0; i < items.size(); i++) {
+            if(getBranch(items.get(i)) == branch) {
+                ans.add(items.get(i));
+            }
+        }
+
+        return ans;
     }
 
     static int getBranch(String s) {
