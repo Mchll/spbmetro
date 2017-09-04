@@ -42,6 +42,10 @@ public class Tab2Fragment extends Fragment {
     Boolean enable_to = false;
     int[] colors = new int[6];
 
+    private static ArrayList[] adj; //список смежности
+    private static ArrayList[] weight; //вес ребра в орграфе
+    public static int n = 69; //количество вершин в орграфе (68)
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -53,6 +57,17 @@ public class Tab2Fragment extends Fragment {
         colors[3] = Color.parseColor("#FF049652");
         colors[4] = Color.parseColor("#FFE37502");
         colors[5] = Color.parseColor("#FF77237F");
+
+        adj = new ArrayList[n + 1];
+        for (int i = 0; i <= n; ++i) {
+            adj[i] = new ArrayList();
+        }
+        //инициализация списка, в котором хранятся веса ребер
+        weight = new ArrayList[n + 1];
+        for (int i = 0; i <= n; ++i) {
+            weight[i] = new ArrayList();
+        }
+        InitStations.getPathStations(adj,weight);
 
         button_from = (Button) view.findViewById(R.id.point_from);
         button_from.setOnClickListener(new View.OnClickListener() {
@@ -102,11 +117,12 @@ public class Tab2Fragment extends Fragment {
             public void onClick(View view) {
                 //Toast.makeText(getActivity(), "TESTING BUTTON SEARCH",Toast.LENGTH_SHORT).show();
                 final ArrayList<String> ans;
+
                 String shortest_time = "";
                 if(enable_from && enable_to) {
                     ans = new ArrayList<String>(SolutionPath.run(InitStations.fromStrToInt(string_from),InitStations.fromStrToInt(string_to)));
                     if(ans.size() > 0) {
-                        shortest_time = "Время пути: " + ans.get(ans.size() - 1) + " мин.";
+                        shortest_time = "Время в пути: " + ans.get(ans.size() - 1) + " мин.";
                         ans.set(ans.size() - 1, shortest_time);
                         ans.add("");
                         ans.add("");
@@ -124,6 +140,10 @@ public class Tab2Fragment extends Fragment {
                     int branch = 0;
                     linLayout.removeAllViews();
 
+                    int current_time = CurrentTime.getCurrentTime();
+                    int current_hours = current_time / 100;
+                    int current_minutes = (current_time % 100);
+
                     for (int i = 0; i < path.length; i++) {
                         View item = ltInflater.inflate(R.layout.my_list_item, linLayout, false);
                         branch = InitStations.getBranch(path[i]);
@@ -133,6 +153,39 @@ public class Tab2Fragment extends Fragment {
 
                         Button button_item = (Button) item.findViewById(R.id.item_button);
                         button_item.setBackgroundColor(colors[branch]);
+
+                        Button button_time = (Button) item.findViewById(R.id.button_time);
+
+                        if(i > 0) {
+                            int v = InitStations.fromStrToInt(path[i]);
+                            int pred = InitStations.fromStrToInt(path[i - 1]);
+                            for (int ii = 0; ii < adj[v].size(); ++ii) {
+                                int u = (int) adj[v].get(ii);
+                                if(u == pred) {
+                                    int weightU = (int) weight[v].get(ii);
+                                    current_minutes = current_minutes + weightU;
+                                    current_hours = (current_hours + current_minutes / 60) % 24;
+                                    current_minutes = current_minutes % 60;
+                                }
+                            }
+                        }
+
+                        String time = "";
+                        if(current_hours / 10 == 0) {
+                            time = time + "0" + String.valueOf(current_hours) + ":";
+                        }
+                        else {
+                            time = time + String.valueOf(current_hours) + ":";
+                        }
+                        if(current_minutes / 10 == 0) {
+                            time = time + "0" + String.valueOf(current_minutes);
+                        }
+                        else {
+                            time = time + String.valueOf(current_minutes);
+                        }
+
+                        if(path.length - i > 4) button_time.setText(time);
+                        else button_time.setText(" ");
 
                         item.getLayoutParams().width = LayoutParams.MATCH_PARENT;
                         linLayout.addView(item);

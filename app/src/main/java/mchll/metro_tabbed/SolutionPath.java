@@ -20,7 +20,7 @@ public class SolutionPath {
 
     public static int n = 69; //количество вершин в орграфе (68)
     //private int m = MNOGO; //количествое дуг в орграфе
-    public static ArrayList[] adj; //список смежности
+    private static ArrayList[] adj; //список смежности
     private static ArrayList[] weight; //вес ребра в орграфе
     private static boolean used[]; //массив для хранения информации о пройденных и не пройденных вершинах
     private static int dist[]; //массив для хранения расстояния от стартовой вершины
