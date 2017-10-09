@@ -698,4 +698,80 @@ class InitStations {
 
         else return 0;
     }
+
+    static String getStationTime(String s) {
+        if(s.equals("Девяткино")) return "05:32 - 00:00";
+        else if(s.equals("Гражданский проспект")) return "05:30 - 00:44";
+        else if(s.equals("Академическая")) return "05:35 - 00:40";
+        else if(s.equals("Политехническая")) return "05:37 - 00:39";
+        else if(s.equals("Площадь Мужества")) return "05:40 - 00:37";
+        else if(s.equals("Лесная")) return "05:42 - 00:33";
+        else if(s.equals("Выборгская")) return "05:45 - 00:30";
+        else if(s.equals("Площадь Ленина")) return "05:40 - 00:28";
+        else if(s.equals("Чернышевская")) return "05:43 - 00:25";
+        else if(s.equals("Площадь Восстания")) return "05:44 - 00:25";
+        else if(s.equals("Владимирская")) return "05:38 - 00:26";
+        else if(s.equals("Пушкинская")) return "05:38 - 00:28";
+        else if(s.equals("Технологический институт 1")) return "07:00 - 20:00";
+        else if(s.equals("Балтийская")) return "05:36 - 00:33";
+        else if(s.equals("Нарвская")) return "05:36 - 00:36";
+        else if(s.equals("Кировский завод")) return "05:30 - 00:40";
+        else if(s.equals("Автово")) return "05:30 - 00:42";
+        else if(s.equals("Ленинский проспект")) return "05:40 - 00:45";
+        else if(s.equals("Проспект Ветеранов")) return "05:38 - 00:00";
+
+        else if(s.equals("Парнас")) return "05:47 - 00:00";
+        else if(s.equals("Проспект Просвещения")) return "05:36 - 00:40";
+        else if(s.equals("Озерки")) return "05:42 - 00:41";
+        else if(s.equals("Удельная")) return "05:45 - 00:38";
+        else if(s.equals("Пионерская")) return "05:47 - 00:35";
+        else if(s.equals("Чёрная речка")) return "05:50 - 00:32";
+        else if(s.equals("Петроградская")) return "05:36 - 00:28";
+        else if(s.equals("Горьковская")) return "05:38 - 00:26";
+        else if(s.equals("Невский проспект")) return "05:36 - 00:28";
+        else if(s.equals("Сенная площадь")) return "05:36 - 00:26";
+        else if(s.equals("Технологический институт 2")) return "05:40 - 00:28";
+        else if(s.equals("Фрунзенская")) return "05:45 - 00:30";
+        else if(s.equals("Московские ворота")) return "05:43 - 00:33";
+        else if(s.equals("Электросила")) return "05:40 - 00:35";
+        else if(s.equals("Парк Победы")) return "05:37 - 00:37";
+        else if(s.equals("Московская")) return "05:35 - 00:41";
+        else if(s.equals("Звёздная")) return "05:31 - 00:45";
+        else if(s.equals("Купчино")) return "05:30 - 00:00";
+
+        else if(s.equals("Приморская")) return "05:53 - 00:03";
+        else if(s.equals("Василеостровская")) return "05:34 - 00:34";
+        else if(s.equals("Гостиный двор")) return "05:36 - 00:28";
+        else if(s.equals("Маяковская")) return "05:42 - 00:25";
+        else if(s.equals("Площадь Александра Невского 1")) return "05:32 - 00:24";
+        else if(s.equals("Елизаровская")) return "05:39 - 00:24";
+        else if(s.equals("Ломоносовская")) return "05:35 - 00:27";
+        else if(s.equals("Пролетарская")) return "05:38 - 00:30";
+        else if(s.equals("Обухово")) return "05:40 - 00:33";
+        else if(s.equals("Рыбацкое")) return "05:36 - 00:05";
+
+        else if(s.equals("Спасская")) return "05:40 - 00:08";
+        else if(s.equals("Достоевская")) return "07:00 - 20:00";
+        else if(s.equals("Лиговский проспект")) return "05:42 - 00:18";
+        else if(s.equals("Площадь Александра Невского 2")) return "07:00 - 20:00";
+        else if(s.equals("Новочеркасская")) return "05:39 - 00:14";
+        else if(s.equals("Ладожская")) return "05:40 - 00:15";
+        else if(s.equals("Проспект Большевиков")) return "05:37 - 00:18";
+        else if(s.equals("Улица Дыбенко")) return "05:35 - 00:05";
+
+        else if(s.equals("Комендантский проспект")) return "05:36 - 00:03";
+        else if(s.equals("Старая Деревня")) return "05:37 - 00:25";
+        else if(s.equals("Крестовский остров")) return "05:42 - 00:22";
+        else if(s.equals("Чкаловская")) return "05:38 - 00:19";
+        else if(s.equals("Спортивная")) return "05:37 - 00:16";
+        else if(s.equals("Адмиралтейская")) return "05:38 - 00:15";
+        else if(s.equals("Садовая")) return "05:36 - 00:20";
+        else if(s.equals("Звенигородская")) return "05:40 - 00:23";
+        else if(s.equals("Обводный канал")) return "05:35 - 00:24";
+        else if(s.equals("Волковская")) return "05:35 - 00:05";
+        else if(s.equals("Бухарестская")) return "05:37 - 00:29";
+        else if(s.equals("Международная")) return "05:35 - 00:02";
+
+        else return "";
+    }
 }

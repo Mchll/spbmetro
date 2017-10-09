@@ -41,6 +41,7 @@ public class Tab3Fragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.tab3_fragment,container,false);
 
         colors[0] = Color.parseColor("#FFFAFAFA");
@@ -86,6 +87,10 @@ public class Tab3Fragment extends Fragment {
 
                             Button button_item = (Button) item.findViewById(R.id.item_button);
                             button_item.setBackgroundColor(colors[branche]);
+
+                            String time_station = InitStations.getStationTime(stat[ii]);
+                            Button button_time = (Button) item.findViewById(R.id.button_time);
+                            button_time.setText(time_station);
 
                             item.getLayoutParams().width = LayoutParams.MATCH_PARENT;
                             linLayout_enter.addView(item);
