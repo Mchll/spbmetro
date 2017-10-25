@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
         SectionsPageAdapter adapter = new SectionsPageAdapter(getSupportFragmentManager());
         adapter.addFragment(new Tab1Fragment(), "MAP");
         adapter.addFragment(new Tab2Fragment(), "PATH");
-        adapter.addFragment(new Tab3Fragment(), "TEST");
+        adapter.addFragment(new Tab3Fragment(), "HISTORY");
         viewPager.setAdapter(adapter);
     }
 

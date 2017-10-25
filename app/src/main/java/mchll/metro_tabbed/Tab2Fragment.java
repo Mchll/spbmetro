@@ -8,6 +8,7 @@ import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +21,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.view.ViewGroup.LayoutParams;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import ir.mirrajabi.searchdialog.SimpleSearchDialogCompat;
 import ir.mirrajabi.searchdialog.core.BaseSearchDialogCompat;
@@ -125,14 +128,40 @@ public class Tab2Fragment extends Fragment {
                     if(ans.size() > 0) {
                         shortest_time = "Время в пути: " + ans.get(ans.size() - 1) + " мин.";
                         ans.set(ans.size() - 1, shortest_time);
+                        ans.set(0, shortest_time);
                         ans.add("");
                         ans.add("");
                         ans.add("");
                     }
 
+
+                    Thread t = new Thread() {
+                        @Override
+                        public void run() {
+                            try {
+                                while (!isInterrupted()) {
+                                    Thread.sleep(1000);
+                                    getActivity().runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            long date = System.currentTimeMillis() + 3*60*60*1000;
+                                            SimpleDateFormat sdf = new SimpleDateFormat(" dd MMMM yyyy\nHH:mm:ss ", Locale.ENGLISH);
+                                            String dateString = sdf.format(date);
+                                            fab.setText(dateString);
+                                        }
+                                    });
+                                }
+                            } catch (InterruptedException e) {
+                                Log.d(TAG, "Tab2Fragment: current time fab");
+                            }
+                        }
+                    };
+                    t.start();
                     fab.setVisibility(View.VISIBLE);
-                    fab.setText(" " + shortest_time + " ");
+
+
                     String[] path = ans.toArray(new String[ans.size()]);
+
 
                     /*ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, path);
                     smallest_path.setAdapter(adapter);*/
@@ -157,7 +186,7 @@ public class Tab2Fragment extends Fragment {
 
                         Button button_time = (Button) item.findViewById(R.id.button_time);
 
-                        if(i > 0) {
+                        if(i > 1) {
                             int v = InitStations.fromStrToInt(path[i]);
                             int pred = InitStations.fromStrToInt(path[i - 1]);
                             for (int ii = 0; ii < adj[v].size(); ++ii) {
@@ -185,7 +214,7 @@ public class Tab2Fragment extends Fragment {
                             time = time + String.valueOf(current_minutes);
                         }
 
-                        if(path.length - i > 4) button_time.setText(time);
+                        if(path.length - i > 4 && i != 0) button_time.setText(time);
                         else button_time.setText(" ");
 
                         item.getLayoutParams().width = LayoutParams.MATCH_PARENT;

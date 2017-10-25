@@ -88,6 +88,7 @@ public class SolutionPath {
             }*/
         }
         ArrayList<String> res = new ArrayList<String>();
+        res.add("");
         while(stack.size() > 0) {
             String s = InitStations.fromIntToString((Integer) stack.pop());
             res.add(s);
