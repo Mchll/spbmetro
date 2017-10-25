@@ -60,8 +60,7 @@
         android:layout_marginEnd="20dp"
         android:layout_marginRight="20dp"
         android:background="@drawable/rounded_button"
-        android:text="Shortest time"
-        android:textColor="@android:color/background_light"
-        android:visibility="invisible" />
+        android:text="Current time"
+        android:textColor="@android:color/background_light" />
 
 </RelativeLayout>

@@ -20,7 +20,7 @@ import android.view.ViewGroup;
 
 import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements Tab3Fragment.OnSelectedButtonListener {
 
     private static final String TAG = "MainActivity";
 
@@ -50,6 +50,19 @@ public class MainActivity extends AppCompatActivity {
         adapter.addFragment(new Tab2Fragment(), "PATH");
         adapter.addFragment(new Tab3Fragment(), "HISTORY");
         viewPager.setAdapter(adapter);
+    }
+
+    @Override
+    public void onButtonSelected(String s) {
+        // подключаем FragmentManager
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
+        // Получаем ссылку на второй фрагмент по ID
+        Tab2Fragment fragment2 = (Tab2Fragment) fragmentManager.findFragmentByTag("PATH");
+
+        Log.d("mLog","here main");
+        // Выводим нужную информацию
+        Tab2Fragment.setDescription(s);
     }
 
 }

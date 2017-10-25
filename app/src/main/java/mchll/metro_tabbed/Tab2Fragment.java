@@ -1,5 +1,7 @@
 package mchll.metro_tabbed;
 
+import android.content.ContentValues;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -33,17 +35,18 @@ import ir.mirrajabi.searchdialog.core.Searchable;
 public class Tab2Fragment extends Fragment {
     private static final String TAG = "Tab2Fragment";
 
-    private Button button_from;
-    private Button button_to;
-    private Button button_search;
+    private static Button button_from;
+    private static Button button_to;
+    private static Button button_search;
     private Button fab;
     private LinearLayout linLayout;
     private ListView smallest_path;
     String string_from = "";
     String string_to = "";
-    Boolean enable_from = false;
-    Boolean enable_to = false;
+    static Boolean enable_from = false;
+    static Boolean enable_to = false;
     int[] colors = new int[6];
+    DBHelper dbHelper;
 
     private static ArrayList[] adj; //список смежности
     private static ArrayList[] weight; //вес ребра в орграфе
@@ -54,6 +57,7 @@ public class Tab2Fragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.tab2_fragment,container,false);
+        dbHelper = new DBHelper(getActivity());
 
         colors[0] = Color.parseColor("#FFFAFAFA");
         colors[1] = Color.parseColor("#FFDB0232");
@@ -72,6 +76,32 @@ public class Tab2Fragment extends Fragment {
             weight[i] = new ArrayList();
         }
         InitStations.getPathStations(adj,weight);
+
+
+        Thread t = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    while (!isInterrupted()) {
+                        Thread.sleep(1000);
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                long date = System.currentTimeMillis(); //+ 3*60*60*1000;
+                                SimpleDateFormat sdf = new SimpleDateFormat(" dd MMMM yyyy \n HH:mm:ss ", Locale.ENGLISH);
+                                String dateString = sdf.format(date);
+                                fab.setText(dateString);
+                            }
+                        });
+                    }
+                } catch (InterruptedException e) {
+                    Log.d(TAG, "Tab2Fragment: current time fab");
+                }
+            }
+        };
+        t.start();
+
+
 
         button_from = (Button) view.findViewById(R.id.point_from);
         button_from.setOnClickListener(new View.OnClickListener() {
@@ -120,10 +150,23 @@ public class Tab2Fragment extends Fragment {
             @Override
             public void onClick(View view) {
                 //Toast.makeText(getActivity(), "TESTING BUTTON SEARCH",Toast.LENGTH_SHORT).show();
+
                 final ArrayList<String> ans;
 
                 String shortest_time = "";
                 if(enable_from && enable_to) {
+
+                    string_from = button_from.getText().toString();
+                    string_to = button_to.getText().toString();
+
+                    String s = string_from + " - " + string_to;
+                    SQLiteDatabase database = dbHelper.getWritableDatabase();
+                    ContentValues contentValues = new ContentValues(); //одна строка таблицы (в виде массива)
+                    contentValues.put(DBHelper.KEY_FROM,s);
+                    database.delete(DBHelper.TABLE_CONTACTS, DBHelper.KEY_FROM + " = ?", new String[]{s});
+                    database.insert(DBHelper.TABLE_CONTACTS, null, contentValues);
+
+
                     ans = new ArrayList<String>(SolutionPath.run(InitStations.fromStrToInt(string_from),InitStations.fromStrToInt(string_to)));
                     if(ans.size() > 0) {
                         shortest_time = "Время в пути: " + ans.get(ans.size() - 1) + " мин.";
@@ -133,32 +176,6 @@ public class Tab2Fragment extends Fragment {
                         ans.add("");
                         ans.add("");
                     }
-
-
-                    Thread t = new Thread() {
-                        @Override
-                        public void run() {
-                            try {
-                                while (!isInterrupted()) {
-                                    Thread.sleep(1000);
-                                    getActivity().runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            long date = System.currentTimeMillis() + 3*60*60*1000;
-                                            SimpleDateFormat sdf = new SimpleDateFormat(" dd MMMM yyyy\nHH:mm:ss ", Locale.ENGLISH);
-                                            String dateString = sdf.format(date);
-                                            fab.setText(dateString);
-                                        }
-                                    });
-                                }
-                            } catch (InterruptedException e) {
-                                Log.d(TAG, "Tab2Fragment: current time fab");
-                            }
-                        }
-                    };
-                    t.start();
-                    fab.setVisibility(View.VISIBLE);
-
 
                     String[] path = ans.toArray(new String[ans.size()]);
 
@@ -235,7 +252,36 @@ public class Tab2Fragment extends Fragment {
             }
         });*/
 
+        dbHelper.close(); //закрываем связь с БД
+
         return view;
     }
 
+    public static void setDescription(String s) {
+        int z = 0;
+        String q = "", w = "";
+        for(int i = 0; i < s.length(); ++i) {
+            if(z == 0) {
+                if(s.charAt(i) == ' ' && s.charAt(i + 1) == '-' || s.charAt(i) == '-') {
+
+                }
+                else if(s.charAt(i) == ' ' && s.charAt(i - 1) == '-') {
+                    z = 1;
+                } else {
+                    q = q + s.charAt(i);
+                }
+            }
+            else {
+                w = w + s.charAt(i);
+            }
+
+        }
+        button_from.setText(q);
+        button_to.setText(w);
+        enable_from = true;
+        enable_to = true;
+
+        button_search.callOnClick();
+
+    }
 }

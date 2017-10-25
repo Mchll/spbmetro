@@ -1,5 +1,7 @@
 package mchll.metro_tabbed;
 
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -8,6 +10,7 @@ import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +24,7 @@ import android.widget.Toast;
 import android.view.ViewGroup.LayoutParams;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import ir.mirrajabi.searchdialog.SimpleSearchDialogCompat;
 import ir.mirrajabi.searchdialog.core.BaseSearchDialogCompat;
@@ -32,11 +36,16 @@ public class Tab3Fragment extends Fragment {
 
     private LinearLayout linLayout_enter;
     private ListView lines;
-    private Button button_line;
+    private Button button_clear;
     Boolean us = false;
     String string_line = "";
+    DBHelper dbHelper;
 
     int[] colors = new int[6];
+
+    public interface OnSelectedButtonListener {
+        void onButtonSelected(String s);
+    }
 
     @Nullable
     @Override
@@ -44,66 +53,89 @@ public class Tab3Fragment extends Fragment {
 
         View view = inflater.inflate(R.layout.tab3_fragment,container,false);
 
-        colors[0] = Color.parseColor("#FFFAFAFA");
-        colors[1] = Color.parseColor("#FFDB0232");
-        colors[2] = Color.parseColor("#FF0277BB");
-        colors[3] = Color.parseColor("#FF049652");
-        colors[4] = Color.parseColor("#FFE37502");
-        colors[5] = Color.parseColor("#FF77237F");
-
-        button_line = (Button) view.findViewById(R.id.button_line);
         linLayout_enter = (LinearLayout) view.findViewById(R.id.linLayout_enter);
 
-        button_line.setOnClickListener(new View.OnClickListener() {
+        dbHelper = new DBHelper(getActivity());
+
+
+
+        button_clear = (Button) view.findViewById(R.id.button_clear);
+        button_clear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Toast.makeText(getActivity(), "TESTING BUTTON TO",Toast.LENGTH_SHORT).show();
-
-                new SimpleSearchDialogCompat(getActivity(), "Search...", "What are you looking for...?", null, InitStations.initLines(), new SearchResultListener<Searchable>() {
-                    @Override
-                    public void onSelected(BaseSearchDialogCompat baseSearchDialogCompat, Searchable searchable, int i) {
-                        string_line = ""+searchable.getTitle();
-                        button_line.setText(string_line);
-                        us = true;
-                        int j = InitStations.getIntBranch(string_line);
-                        ArrayList<String> ans;
-                        ans = InitStations.getBranchStations(j);
-                        if(ans.size() > 0) {
-                            ans.add("");
-                            ans.add("");
-                            ans.add("");
-                        }
-                        String[] stat = ans.toArray(new String[ans.size()]);
-                        LayoutInflater ltInflater = getActivity().getLayoutInflater();
-                        int branche = 0;
-                        linLayout_enter.removeAllViews();
-
-                        for (int ii = 0; ii < stat.length; ii++) {
-                            View item = ltInflater.inflate(R.layout.my_list_item, linLayout_enter, false);
-                            branche = InitStations.getBranch(stat[ii]);
-
-                            TextView text_item = (TextView) item.findViewById(R.id.item_text);
-                            text_item.setText(stat[ii]);
-
-                            Button button_item = (Button) item.findViewById(R.id.item_button);
-                            button_item.setBackgroundColor(colors[branche]);
-
-                            String time_station = InitStations.getStationTime(stat[ii]);
-                            Button button_time = (Button) item.findViewById(R.id.button_time);
-                            button_time.setText(time_station);
-
-                            item.getLayoutParams().width = LayoutParams.MATCH_PARENT;
-                            linLayout_enter.addView(item);
-                        }
-
-
-                        Toast.makeText(getActivity(), string_line, Toast.LENGTH_SHORT).show();
-                        baseSearchDialogCompat.dismiss();
-                    }
-                }).show();
-                
+                //Toast.makeText(getActivity(), "TESTING BUTTON FROM",Toast.LENGTH_SHORT).show();
+                SQLiteDatabase database = dbHelper.getWritableDatabase();
+                database.delete(DBHelper.TABLE_CONTACTS, null, null);
+                linLayout_enter.removeAllViews();
             }
         });
+
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+        Cursor cursor = database.query(DBHelper.TABLE_CONTACTS, null, null, null, null, null, null); //имя, список запрашиваемых полей, условия выборки, группировка, сортировка
+        ArrayList<String> ans = new ArrayList<>();
+        if (cursor.moveToFirst()) { //есть ли вообще строки и делает запись курсора активной
+            int idIndex = cursor.getColumnIndex(DBHelper.KEY_ID);
+            int fromIndex = cursor.getColumnIndex(DBHelper.KEY_FROM);
+            do {
+                String s = cursor.getString(fromIndex);
+                ans.add(s);
+            } while (cursor.moveToNext());
+        } else
+            Log.d("mLog","0 rows");
+
+        cursor.close();
+
+        Collections.reverse(ans);
+        if(ans.size() > 0) {
+            ans.add("");
+            ans.add("");
+            ans.add("");
+        }
+        String[] stat = ans.toArray(new String[ans.size()]);
+        LayoutInflater ltInflater = getActivity().getLayoutInflater();
+
+        linLayout_enter.removeAllViews();
+
+        for (int ii = 0; ii < stat.length; ii++) {
+            if(ii < 12 && !stat[ii].equals("")) {
+                View item = ltInflater.inflate(R.layout.my_list_history, linLayout_enter, false);
+
+                final Button button_history = (Button) item.findViewById(R.id.button_history);
+                button_history.setText(stat[ii]);
+                button_history.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        String s = button_history.getText().toString();
+                        Toast.makeText(getActivity(), s, Toast.LENGTH_SHORT).show();
+
+                        Log.d("mLog","here tab3");
+                        OnSelectedButtonListener listener = (OnSelectedButtonListener) getActivity();
+                        listener.onButtonSelected(s);
+
+                    }
+                });
+
+                item.getLayoutParams().width = LayoutParams.MATCH_PARENT;
+                linLayout_enter.addView(item);
+            }
+            else if(stat[ii].equals("")) {
+                View item = ltInflater.inflate(R.layout.my_list_history, linLayout_enter, false);
+
+                final Button button_history = (Button) item.findViewById(R.id.button_history);
+                button_history.setText(stat[ii]);
+
+                item.getLayoutParams().width = LayoutParams.MATCH_PARENT;
+                linLayout_enter.addView(item);
+            } else {
+                    database.delete(DBHelper.TABLE_CONTACTS, DBHelper.KEY_FROM + " = ?", new String[]{stat[ii]});
+                }
+        }
+
+
+        //Toast.makeText(getActivity(), string_line, Toast.LENGTH_SHORT).show();
+
+
+        dbHelper.close();
 
         return view;
     }
